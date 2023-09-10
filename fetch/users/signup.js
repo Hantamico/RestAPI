@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
 const { joiUserSignupSchema } = require("../../validation/users");
 const User = require("../../models/users");
+const sendEmail = require('../../helpers/sendEmail');
 
 const signup = async (req, res, next) => {
   try {
@@ -37,7 +38,9 @@ const signup = async (req, res, next) => {
     }
 
     const avatarUrl = gravatar.url(email);
-    const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+      const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+    
+    await sendEmail(email);
 
     const result = await User.create({ ...req.body, password: hashedPassword, avatarUrl });
     res.status(201).json({
@@ -51,5 +54,7 @@ const signup = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 module.exports = signup;
