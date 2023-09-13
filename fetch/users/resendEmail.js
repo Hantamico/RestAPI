@@ -20,7 +20,8 @@ const resendEmail = async (req, res, next) => {
       return;
     }
 
-    const verificationToken = uuid();
+    const verificationToken = user.verificationToken;
+    
     await sendEmail(email, verificationToken);
 
     res.json({
